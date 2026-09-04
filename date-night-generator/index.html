@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Date Night Box Office</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root {
+    --bg: #f4e9da;
+    --bg-soft: #ece0cd;
+    --marquee: #2f1729;
+    --marquee-soft: #3d1f38;
+    --ink: #2c1524;
+    --ink-dim: #6b5062;
+    --ink-on-marquee: #f6ecdf;
+    --ink-on-marquee-dim: #cbb0c4;
+    --gold: #96660f;
+    --gold-strong: #7a530b;
+    --gold-on-dark: #e8a940;
+    --gold-on-dark-soft: #f4c869;
+    --rose: #a53a4a;
+    --rose-on-dark: #e07082;
+    --line: #d8c6ac;
+    --line-on-dark: #56303f;
+    --card-shadow: 0 18px 40px -22px rgba(44, 21, 36, 0.45);
+    --focus-ring: #96660f;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1c0f1a;
+      --bg-soft: #241220;
+      --ink: #f2e6ec;
+      --ink-dim: #b89aae;
+      --gold: var(--gold-on-dark);
+      --gold-strong: var(--gold-on-dark-soft);
+      --line: var(--line-on-dark);
+      --card-shadow: 0 24px 50px -22px rgba(0, 0, 0, 0.6);
+      --focus-ring: var(--gold-on-dark);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #1c0f1a;
+    --bg-soft: #241220;
+    --ink: #f2e6ec;
+    --ink-dim: #b89aae;
+    --gold: var(--gold-on-dark);
+    --gold-strong: var(--gold-on-dark-soft);
+    --line: var(--line-on-dark);
+    --card-shadow: 0 24px 50px -22px rgba(0, 0, 0, 0.6);
+    --focus-ring: var(--gold-on-dark);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+    line-height: 1.5;
+  }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 20px 64px;
+  }
+
+  h1, h2, h3 { text-wrap: balance; margin: 0; }
+
+  /* ---------- Marquee header ---------- */
+
+  .marquee {
+    background: var(--marquee);
+    color: var(--ink-on-marquee);
+    padding: 28px 20px 34px;
+    border-bottom: 6px solid var(--gold-on-dark);
+    position: relative;
+  }
+
+  .bulb-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .bulb {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--gold-on-dark-soft);
+    box-shadow: 0 0 6px 1px rgba(244, 200, 105, 0.7);
+    animation: twinkle 2.6s ease-in-out infinite;
+  }
+
+  .bulb:nth-child(3n) { animation-delay: .4s; }
+  .bulb:nth-child(3n+1) { animation-delay: .9s; }
+  .bulb:nth-child(3n+2) { animation-delay: 1.5s; }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: .45; }
+    50% { opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bulb { animation: none; opacity: .9; }
+  }
+
+  .marquee-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--gold-on-dark-soft);
+  }
+
+  .title {
+    font-family: "Big Shoulders Display", ui-sans-serif, sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.6rem, 8vw, 4.2rem);
+    line-height: .92;
+    letter-spacing: .01em;
+    text-transform: uppercase;
+    margin: 6px 0 10px;
+  }
+
+  .title span { color: var(--gold-on-dark); }
+
+  .tagline {
+    color: var(--ink-on-marquee-dim);
+    font-size: 15px;
+    max-width: 46ch;
+    margin: 0 auto;
+  }
+
+  /* ---------- Filter section ---------- */
+
+  .filters {
+    margin-top: -1px;
+    background: var(--bg-soft);
+    border-bottom: 1px dashed var(--line);
+    padding: 22px 20px 24px;
+  }
+
+  .filters-inner { max-width: 720px; margin: 0 auto; }
+
+  .filter-group + .filter-group { margin-top: 16px; }
+
+  .filter-label {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .chip {
+    font-family: "Work Sans", sans-serif;
+    font-weight: 600;
+    font-size: 13.5px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: transparent;
+    color: var(--ink-dim);
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+  }
+
+  .chip:hover { border-color: var(--gold); color: var(--ink); }
+
+  .chip[aria-pressed="true"] {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--bg-soft);
+  }
+
+  .chip:focus-visible, .btn:focus-visible, .icon-btn:focus-visible, .ticket-row:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Stage / result ---------- */
+
+  .stage { padding: 30px 20px 8px; }
+
+  .pull-btn-row { display: flex; justify-content: center; margin-bottom: 26px; }
+
+  .btn {
+    font-family: "Big Shoulders Display", sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    background: var(--marquee);
+    color: var(--gold-on-dark);
+    border: 2px solid var(--marquee);
+    padding: 14px 34px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: var(--card-shadow);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+
+  .btn:hover { transform: translateY(-2px); }
+  .btn:active { transform: translateY(0); }
+
+  .ticket {
+    position: relative;
+    background: var(--bg-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--card-shadow);
+    padding: 26px 30px 24px;
+    display: grid;
+    gap: 14px;
+  }
+
+  .ticket::before, .ticket::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 26px;
+    height: 26px;
+    background: var(--bg);
+    border-radius: 50%;
+    transform: translateY(-50%);
+  }
+  .ticket::before { left: -13px; }
+  .ticket::after { right: -13px; }
+
+  .ticket-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    border-bottom: 1px dashed var(--line);
+    padding-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .admit {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
+  .ticket-no {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: .06em;
+    color: var(--ink-dim);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .idea-vibe {
+    display: inline-block;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--rose);
+    background: color-mix(in srgb, var(--rose) 12%, transparent);
+    padding: 3px 9px;
+    border-radius: 5px;
+    width: fit-content;
+  }
+
+  :root[data-theme="dark"] .idea-vibe,
+  :root:not([data-theme="light"]) .idea-vibe {
+    color: var(--rose-on-dark);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .idea-vibe {
+      background: color-mix(in srgb, var(--rose-on-dark) 16%, transparent);
+    }
+  }
+
+  .idea-title {
+    font-family: "Big Shoulders Display", sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.7rem, 5vw, 2.3rem);
+    line-height: 1.02;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .idea-desc { font-size: 16px; color: var(--ink); max-width: 60ch; }
+
+  .idea-tip {
+    font-size: 14px;
+    color: var(--ink-dim);
+    font-style: italic;
+    border-left: 2.5px solid var(--gold);
+    padding-left: 10px;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--ink-dim);
+  }
+
+  .meta-pill {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px 11px;
+  }
+
+  .ticket-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed var(--line);
+    padding-top: 14px;
+    margin-top: 4px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: transparent;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-family: "Work Sans", sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .icon-btn:hover { border-color: var(--gold); }
+
+  .icon-btn[aria-pressed="true"] { border-color: var(--rose); color: var(--rose); }
+  :root[data-theme="dark"] .icon-btn[aria-pressed="true"],
+  :root:not([data-theme="light"]) .icon-btn[aria-pressed="true"] { color: var(--rose-on-dark); border-color: var(--rose-on-dark); }
+
+  .empty-note {
+    font-size: 14px;
+    color: var(--ink-dim);
+  }
+
+  .empty-note button {
+    background: none;
+    border: none;
+    color: var(--gold-strong);
+    text-decoration: underline;
+    cursor: pointer;
+    font: inherit;
+    padding: 0;
+  }
+
+  /* ---------- Saved tickets ---------- */
+
+  .saved-section { padding: 36px 20px 0; }
+
+  .saved-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+
+  .saved-heading h2 {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
+  .saved-count {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--ink-dim);
+  }
+
+  .saved-list { display: grid; gap: 8px; }
+
+  .ticket-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    padding: 10px 14px;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    color: var(--ink);
+    width: 100%;
+  }
+
+  .ticket-row:hover { border-color: var(--gold); }
+
+  .ticket-row-open {
+    display: block;
+    flex: 1;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .ticket-row-title {
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .ticket-row-meta {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--ink-dim);
+  }
+
+  .remove-btn {
+    background: none;
+    border: none;
+    color: var(--ink-dim);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 2px 6px;
+    flex-shrink: 0;
+  }
+
+  .remove-btn:hover { color: var(--rose); }
+
+  .saved-empty {
+    font-size: 13.5px;
+    color: var(--ink-dim);
+    border: 1px dashed var(--line);
+    border-radius: 9px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  footer {
+    text-align: center;
+    padding: 40px 20px 0;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: .06em;
+    color: var(--ink-dim);
+  }
+</style>
+</head>
+<body>
+
+<header class="marquee">
+  <div class="bulb-row" id="bulbRow" aria-hidden="true"></div>
+  <div class="marquee-inner">
+    <p class="eyebrow">Now Booking &middot; Tonight Only</p>
+    <h1 class="title">Date Night<br><span>Box Office</span></h1>
+    <p class="tagline">Pull a ticket. It tells you exactly what you're doing tonight &mdash; filtered by mood, budget, and how far you're willing to go.</p>
+  </div>
+</header>
+
+<section class="filters">
+  <div class="filters-inner">
+    <div class="filter-group">
+      <span class="filter-label">Mood</span>
+      <div class="chip-row" id="vibeChips" role="group" aria-label="Filter by mood"></div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Budget</span>
+      <div class="chip-row" id="budgetChips" role="group" aria-label="Filter by budget"></div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Setting</span>
+      <div class="chip-row" id="settingChips" role="group" aria-label="Filter by setting"></div>
+    </div>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="stage">
+    <div class="pull-btn-row">
+      <button class="btn" id="pullBtn" type="button">Pull a Ticket</button>
+    </div>
+    <div id="ticketArea" aria-live="polite"></div>
+  </div>
+
+  <section class="saved-section">
+    <div class="saved-heading">
+      <h2>Saved Tickets</h2>
+      <span class="saved-count" id="savedCount">0</span>
+    </div>
+    <div class="saved-list" id="savedList"></div>
+  </section>
+
+  <footer>&middot; House rules: no refunds, no regrets &middot;</footer>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var IDEAS = [
+    { t: "The Blind Taste-Off", d: "Blindfold each other and guess five mystery snacks from the pantry and fridge. Loser handles dish duty for the week.", tip: "Sneak in one genuinely weird item — pickled ginger works every time.", vibe: "playful", budget: 1, setting: "indoor", dur: "30 min" },
+    { t: "Parking Lot Planetarium", d: "Drive twenty minutes past the streetlights, kill the headlights, and see how many constellations you can actually name versus make up.", tip: "A free stargazing app turns your phone into a very convincing cheat sheet.", vibe: "romantic", budget: 1, setting: "outdoor", dur: "1–2 hrs" },
+    { t: "Three-Diner Crawl", d: "Order pie at the first diner, the main course at the second, and split a milkshake at the third.", tip: "Call ahead — some diners stop serving pie after 9pm.", vibe: "playful", budget: 2, setting: "indoor", dur: "2–3 hrs" },
+    { t: "Museum After Dark", d: "Check for a late-night museum opening and race each other to find the strangest object in the whole building.", tip: "Many museums run free or pay-what-you-can evenings once a month.", vibe: "cultured", budget: 2, setting: "indoor", dur: "2 hrs" },
+    { t: "Cook the Cookbook", d: "Pick a cookbook neither of you has opened, close your eyes, and cook whatever recipe your finger lands on.", tip: "Keep a takeout menu on standby in case the page lands on something with 11 ingredients you don't own.", vibe: "cozy", budget: 2, setting: "indoor", dur: "1.5 hrs" },
+    { t: "Karaoke for an Audience of Two", d: "Rent a private karaoke room for an hour instead of braving an open mic.", tip: "Book the last slot of the night — rooms get cheaper after 10pm.", vibe: "playful", budget: 2, setting: "indoor", dur: "1 hr" },
+    { t: "The Unplanned Bus Route", d: "Pick a bus or train line neither of you has ridden, get on, and get off wherever looks interesting.", tip: "Bring cash for whatever you find at the last stop.", vibe: "adventurous", budget: 1, setting: "outdoor", dur: "2–3 hrs" },
+    { t: "Life-Drawing, Badly", d: "Buy a $10 sketchpad, sit across from each other, and draw portraits using only your non-dominant hand.", tip: "Frame the worst one. It ages into a great anniversary gift.", vibe: "playful", budget: 1, setting: "indoor", dur: "45 min" },
+    { t: "Rooftop Sunset Scouting", d: "Find the tallest publicly accessible rooftop, bar, or parking structure nearby and watch the sunset from the top.", tip: "Arrive twenty minutes early — the best spots fill in fast.", vibe: "romantic", budget: 1, setting: "outdoor", dur: "1 hr" },
+    { t: "Speed-Dating Yourselves", d: "Write fifteen questions you've never asked each other on index cards and pull one every ten minutes over dinner.", tip: "Include at least one deliberately ridiculous question to keep it from getting too heavy.", vibe: "romantic", budget: 2, setting: "indoor", dur: "1.5 hrs" },
+    { t: "The Tasting Flight", d: "Build your own tasting flight at home — three cheeses, three chocolates, or three hot sauces, blind-ranked.", tip: "Number the samples on the bottom so no one peeks.", vibe: "cozy", budget: 2, setting: "indoor", dur: "1 hr" },
+    { t: "Night Hike to Nowhere", d: "Pick a trail you've never done, start right after dinner, and hike by headlamp until you find a good spot to turn around.", tip: "Walk the trail in daylight first if neither of you has done it before.", vibe: "adventurous", budget: 1, setting: "outdoor", dur: "2 hrs" },
+    { t: "Second-Run Double Feature", d: "Hit a discount or second-run theater and watch two movies back to back for less than one full-price ticket usually costs.", tip: "Split one large popcorn — you'll have two intermissions to refill.", vibe: "cozy", budget: 1, setting: "indoor", dur: "3–4 hrs" },
+    { t: "The Great Antique Hunt", d: "Give each other $10 at an antique mall or flea market and find the strangest possible gift for the other person.", tip: "No googling the item first — the mystery is the point.", vibe: "playful", budget: 1, setting: "indoor", dur: "1.5 hrs" },
+    { t: "Tasting Menu Splurge", d: "Book the tasting menu at the restaurant you've been saving for a special occasion. This counts.", tip: "Ask for the kitchen counter seats if they have them.", vibe: "romantic", budget: 3, setting: "indoor", dur: "2.5 hrs" },
+    { t: "The Overnight Getaway", d: "Book one night somewhere within a two-hour drive that neither of you has been, no plan beyond checking in.", tip: "Pack the night before so a slow morning doesn't turn into a rushed afternoon.", vibe: "adventurous", budget: 3, setting: "either", dur: "overnight" },
+    { t: "Private Chef at Home", d: "Hire a private chef or book a cooking-class-for-two to make a meal you'd never attempt yourselves.", tip: "Pick a cuisine that intimidates you on paper — that's usually the most fun to learn.", vibe: "romantic", budget: 3, setting: "indoor", dur: "2 hrs" },
+    { t: "Balcony Seats, Any Show", d: "Get the cheap seats to whatever's playing at the local theater, orchestra, or comedy club this week — the show matters less than committing to dressing up for it.", tip: "Check student or rush-ticket pricing at the box office an hour before curtain.", vibe: "cultured", budget: 2, setting: "indoor", dur: "2.5 hrs" },
+    { t: "The Puzzle Hostage Situation", d: "Buy a 1000-piece puzzle and agree not to watch anything else until it's finished, however many nights that takes.", tip: "Sort the edge pieces first — it's the only rule that actually helps.", vibe: "cozy", budget: 1, setting: "indoor", dur: "ongoing" },
+    { t: "Farmers Market Breakfast Date", d: "Get up early, hit the farmers market before the crowds, and build breakfast entirely out of what you find there.", tip: "Bring a canvas bag — you will buy more than you planned to.", vibe: "cozy", budget: 1, setting: "outdoor", dur: "2 hrs" },
+    { t: "Escape the Room", d: "Book the highest-rated escape room in town and see how badly you actually work together under a countdown.", tip: "Say every thought out loud, even the dumb ones — that's usually where the answer is.", vibe: "adventurous", budget: 2, setting: "indoor", dur: "1 hr" },
+    { t: "The Photo Walk", d: "Give yourselves 90 minutes and one disposable camera to shoot 27 photos of the neighborhood — no phones, no do-overs.", tip: "Don't peek at the photos until the roll comes back developed.", vibe: "playful", budget: 1, setting: "outdoor", dur: "1.5 hrs" },
+    { t: "Wine Country, One Afternoon", d: "Drive to the nearest vineyard or cidery you haven't tried and do the full tasting flight.", tip: "Book the last tasting slot so you're not rushed out the door.", vibe: "romantic", budget: 2, setting: "outdoor", dur: "3 hrs" },
+    { t: "The Silent Movie Challenge", d: "Watch a movie with the sound off and improvise your own dialogue for every character.", tip: "Action movies work better than dramas — more room for nonsense.", vibe: "playful", budget: 1, setting: "indoor", dur: "1.5 hrs" },
+    { t: "Bookstore Blind Date", d: "Each of you picks a book for the other based only on the cover, no reading the back. Trade and read the first chapter aloud together.", tip: "Used bookstores make the mismatches even better.", vibe: "cozy", budget: 1, setting: "indoor", dur: "1 hr" },
+    { t: "The Kayak Sunset", d: "Rent kayaks or paddleboards for golden hour on the nearest lake, river, or bay.", tip: "Book the sunset slot specifically — it fills up faster than you'd think.", vibe: "adventurous", budget: 2, setting: "outdoor", dur: "2 hrs" },
+    { t: "Backyard Drive-In", d: "Project a movie onto a bedsheet in the backyard. Blankets and popcorn required.", tip: "Wait until it's properly dark — a cheap projector needs the help.", vibe: "cozy", budget: 1, setting: "outdoor", dur: "2 hrs" },
+    { t: "Pottery for Beginners", d: "Take a walk-in pottery or ceramics class and keep whatever monstrosity you end up making.", tip: "Wear something you don't mind getting clay on — all of it.", vibe: "cultured", budget: 2, setting: "indoor", dur: "2 hrs" },
+    { t: "The Reverse Bucket List", d: "Each of you names one thing the other has always wanted to try, then actually book it for tonight.", tip: "No downgrading the idea once it's said out loud.", vibe: "adventurous", budget: 2, setting: "either", dur: "varies" },
+    { t: "Midnight Diner Dessert", d: "Skip dinner, save room, and go somewhere that serves dessert past midnight.", tip: "Split two desserts instead of committing to one — diner pie is a gamble.", vibe: "playful", budget: 1, setting: "indoor", dur: "1 hr" },
+    { t: "The Slow Sunday Market", d: "Spend an entire lazy morning at a flea market or book fair with no agenda and a strict $20 spending limit each.", tip: "Set a meeting point and time — you will lose each other in the stalls.", vibe: "cozy", budget: 1, setting: "outdoor", dur: "3 hrs" },
+    { t: "Hot Air Balloon Sunrise", d: "Book a sunrise hot air balloon ride for the view you'll actually still be talking about next year.", tip: "Dress warmer than you think — it's cold at altitude even in summer.", vibe: "romantic", budget: 3, setting: "outdoor", dur: "3 hrs" },
+    { t: "The Trivia Rematch", d: "Enter pub trivia as a team of two under a fake name and defend your dignity against tables of eight.", tip: "Pick a team name you're willing to hear announced badly all night.", vibe: "playful", budget: 1, setting: "indoor", dur: "2 hrs" },
+    { t: "Spa Night, No Appointment Needed", d: "Turn the bathroom into a spa: face masks, a playlist, and both phones left in the other room.", tip: "Put the phones on charge somewhere you'd actually have to get up for.", vibe: "cozy", budget: 1, setting: "indoor", dur: "1.5 hrs" },
+    { t: "The Aquarium at Feeding Time", d: "Time your aquarium or zoo visit around a feeding demonstration you've never seen.", tip: "Check the schedule online — feedings usually run once or twice a day.", vibe: "cultured", budget: 2, setting: "indoor", dur: "2 hrs" },
+    { t: "Dance Lesson for Two", d: "Book one drop-in salsa, swing, or ballroom class and commit to being genuinely bad at it together.", tip: "Front row, even though everything in you will want the back.", vibe: "playful", budget: 2, setting: "indoor", dur: "1.5 hrs" }
+  ];
+
+  var VIBES = ["cozy", "romantic", "playful", "adventurous", "cultured"];
+  var BUDGETS = [1, 2, 3];
+  var BUDGET_LABEL = { 1: "$", 2: "$$", 3: "$$$" };
+  var SETTINGS = ["indoor", "outdoor", "either"];
+
+  var state = {
+    vibes: new Set(VIBES),
+    budgets: new Set(BUDGETS),
+    settings: new Set(SETTINGS),
+    lastIndex: -1
+  };
+
+  function ticketNumber(title) {
+    var h = 0;
+    for (var i = 0; i < title.length; i++) {
+      h = (h * 31 + title.charCodeAt(i)) >>> 0;
+    }
+    return "NO. " + String(h % 100000).padStart(5, "0");
+  }
+
+  function loadFavorites() {
+    try {
+      var raw = localStorage.getItem("dnbo:favorites");
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveFavorites(list) {
+    try {
+      localStorage.setItem("dnbo:favorites", JSON.stringify(list));
+    } catch (e) {
+      /* storage unavailable; favorites just won't persist this session */
+    }
+  }
+
+  var favorites = loadFavorites();
+
+  function isFavorite(title) {
+    return favorites.indexOf(title) !== -1;
+  }
+
+  function toggleFavorite(title) {
+    var i = favorites.indexOf(title);
+    if (i === -1) favorites.push(title); else favorites.splice(i, 1);
+    saveFavorites(favorites);
+    renderSaved();
+  }
+
+  function matchesFilters(idea) {
+    return state.vibes.has(idea.vibe) &&
+      state.budgets.has(idea.budget) &&
+      (state.settings.has(idea.setting) || idea.setting === "either" && (state.settings.has("indoor") || state.settings.has("outdoor")));
+  }
+
+  function filteredIdeas() {
+    return IDEAS.filter(matchesFilters);
+  }
+
+  function renderChips(containerId, values, activeSet, labelFn) {
+    var el = document.getElementById(containerId);
+    el.innerHTML = "";
+    values.forEach(function (v) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "chip";
+      btn.textContent = labelFn(v);
+      btn.setAttribute("aria-pressed", activeSet.has(v) ? "true" : "false");
+      btn.addEventListener("click", function () {
+        if (activeSet.has(v)) {
+          if (activeSet.size > 1) activeSet.delete(v);
+        } else {
+          activeSet.add(v);
+        }
+        btn.setAttribute("aria-pressed", activeSet.has(v) ? "true" : "false");
+      });
+      el.appendChild(btn);
+    });
+  }
+
+  function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  function renderTicket(idea) {
+    var area = document.getElementById("ticketArea");
+    if (!idea) {
+      area.innerHTML =
+        '<div class="ticket"><p class="empty-note">No shows match tonight’s filters. ' +
+        '<button type="button" id="resetFiltersBtn">Reset filters</button> and try again.</p></div>';
+      var resetBtn = document.getElementById("resetFiltersBtn");
+      if (resetBtn) resetBtn.addEventListener("click", resetFilters);
+      return;
+    }
+
+    var fav = isFavorite(idea.t);
+    area.innerHTML =
+      '<div class="ticket">' +
+        '<div class="ticket-top">' +
+          '<span class="admit">Admit Two</span>' +
+          '<span class="ticket-no">' + ticketNumber(idea.t) + '</span>' +
+        '</div>' +
+        '<span class="idea-vibe">' + capitalize(idea.vibe) + '</span>' +
+        '<h3 class="idea-title">' + idea.t + '</h3>' +
+        '<p class="idea-desc">' + idea.d + '</p>' +
+        (idea.tip ? '<p class="idea-tip">' + idea.tip + '</p>' : '') +
+        '<div class="meta-row">' +
+          '<span class="meta-pill">' + BUDGET_LABEL[idea.budget] + '</span>' +
+          '<span class="meta-pill">' + capitalize(idea.setting) + '</span>' +
+          '<span class="meta-pill">' + idea.dur + '</span>' +
+        '</div>' +
+        '<div class="ticket-bottom">' +
+          '<button type="button" class="icon-btn" id="favBtn" aria-pressed="' + fav + '">' +
+            (fav ? '★ Saved' : '☆ Save this ticket') +
+          '</button>' +
+        '</div>' +
+      '</div>';
+
+    document.getElementById("favBtn").addEventListener("click", function () {
+      toggleFavorite(idea.t);
+      renderTicket(idea);
+    });
+  }
+
+  function pullTicket() {
+    var pool = filteredIdeas();
+    if (pool.length === 0) {
+      renderTicket(null);
+      return;
+    }
+    var idx;
+    if (pool.length === 1) {
+      idx = 0;
+    } else {
+      do {
+        idx = Math.floor(Math.random() * pool.length);
+      } while (IDEAS.indexOf(pool[idx]) === state.lastIndex);
+    }
+    var idea = pool[idx];
+    state.lastIndex = IDEAS.indexOf(idea);
+    renderTicket(idea);
+  }
+
+  function resetFilters() {
+    state.vibes = new Set(VIBES);
+    state.budgets = new Set(BUDGETS);
+    state.settings = new Set(SETTINGS);
+    renderChips("vibeChips", VIBES, state.vibes, capitalize);
+    renderChips("budgetChips", BUDGETS, state.budgets, function (b) { return BUDGET_LABEL[b]; });
+    renderChips("settingChips", SETTINGS, state.settings, capitalize);
+    pullTicket();
+  }
+
+  function renderSaved() {
+    var list = document.getElementById("savedList");
+    var count = document.getElementById("savedCount");
+    count.textContent = String(favorites.length);
+    if (favorites.length === 0) {
+      list.innerHTML = '<p class="saved-empty">No tickets saved yet — star one above to keep it for later.</p>';
+      return;
+    }
+    list.innerHTML = "";
+    favorites.forEach(function (title) {
+      var idea = IDEAS.filter(function (i) { return i.t === title; })[0];
+      if (!idea) return;
+      var row = document.createElement("div");
+      row.className = "ticket-row";
+      row.innerHTML =
+        '<button type="button" class="ticket-row-open">' +
+          '<span class="ticket-row-title">' + idea.t + '</span><br>' +
+          '<span class="ticket-row-meta">' + BUDGET_LABEL[idea.budget] + ' · ' + capitalize(idea.setting) + ' · ' + idea.dur + '</span>' +
+        '</button>';
+      var loadBtn = row.querySelector("button");
+      loadBtn.addEventListener("click", function () {
+        state.lastIndex = IDEAS.indexOf(idea);
+        renderTicket(idea);
+        document.getElementById("ticketArea").scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+      var removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "remove-btn";
+      removeBtn.setAttribute("aria-label", "Remove " + idea.t + " from saved tickets");
+      removeBtn.textContent = "×";
+      removeBtn.addEventListener("click", function () {
+        toggleFavorite(idea.t);
+      });
+      row.appendChild(removeBtn);
+      list.appendChild(row);
+    });
+  }
+
+  function buildBulbs() {
+    var row = document.getElementById("bulbRow");
+    for (var i = 0; i < 24; i++) {
+      var b = document.createElement("span");
+      b.className = "bulb";
+      row.appendChild(b);
+    }
+  }
+
+  buildBulbs();
+  renderChips("vibeChips", VIBES, state.vibes, capitalize);
+  renderChips("budgetChips", BUDGETS, state.budgets, function (b) { return BUDGET_LABEL[b]; });
+  renderChips("settingChips", SETTINGS, state.settings, capitalize);
+  document.getElementById("pullBtn").addEventListener("click", pullTicket);
+  renderSaved();
+  pullTicket();
+})();
+</script>
+</body>
+</html>
